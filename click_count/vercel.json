@@ -1,0 +1,14 @@
+{
+    "builds": [
+        {
+            "src": "click_count/wsgi.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "click_count/wsgi.py"
+        }
+    ]
+}
