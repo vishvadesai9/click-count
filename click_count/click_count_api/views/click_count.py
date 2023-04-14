@@ -13,10 +13,14 @@ class ClickModelView(views.APIView):
 
     def post(self, request):
         ip_address = request.data.get("ip","").strip()
+        currentCount = request.data.get("currentCount",0)
+        if currentCount == 0:
+            return JsonResponse({"success": True, "message": "click cOunt zero"}, status=200)
+
         if not ip_address:
             obj, created = ClickCount.objects.get_or_create(country="Anonymous", city="Anonymous",
                                                         defaults={"count": 0})
-            obj.count = F("count") + 1
+            obj.count = F("count") + currentCount
             obj.save()
         else:
             request_url = f'https://geolocation-db.com/jsonp/{ip_address}'
@@ -28,12 +32,12 @@ class ClickModelView(views.APIView):
             if not location['city'] or not location['country_name']:
                 obj, created = ClickCount.objects.get_or_create(country="Anonymous", city="Anonymous",
                                                             defaults={"count": 0})
-                obj.count = F("count") + 1
+                obj.count = F("count") + currentCount
                 obj.save()
             else:
                 obj, created = ClickCount.objects.get_or_create(country=location["country_name"], city=location["city"],
                                                                 defaults={"count": 0})
-                obj.count = F("count") + 1
+                obj.count = F("count") + currentCount
                 obj.save()
 
         message = "Click updated successfully" if not created else "Click recorded successfully"

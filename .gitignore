@@ -1,2 +1,5 @@
 .env
 .vscode
+__init__py
+env/
+__pycache__
